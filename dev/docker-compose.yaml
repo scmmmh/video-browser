@@ -1,0 +1,14 @@
+version: '2'
+services:
+  postgresql:
+    image: postgres:14
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=devPWD
+      - POSTGRES_USER=video_browser
+      - POSTGRES_DB=video_browser
+
+volumes:
+  postgresql:
+    driver: local
