@@ -46,7 +46,7 @@ dependencies = ["coverage[toml]>=6.5", "pytest"]
 
 [tool.hatch.envs.default.scripts]
 video-browser = "cd dev && python -m video_browser {args}"
-server = "cd dev && uvicorn --reload --reload-dir ../video_browser video_browser.frontend:app {args}"
+server = "cd dev && uvicorn --host 0.0.0.0 --reload --reload-dir ../video_browser video_browser.frontend:app {args}"
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
 cov-report = ["- coverage combine", "coverage report"]

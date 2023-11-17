@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { onDestroy, tick } from "svelte";
   import videojs from "video.js";
   import type Player from "video.js/dist/types/player";
-  import { onDestroy, tick } from "svelte";
+
+  import { config } from "../store/config";
 
   export let vid: string;
   let videoPlayer: HTMLVideoElement;
@@ -12,29 +14,35 @@
     player = null;
   });
 
-  $: {
+  function initialisePlayer(vid: string) {
     if (player) {
       videojs(videoPlayer).dispose();
       player = null;
     }
     tick().then(() => {
-      videojs(videoPlayer);
+      player = videojs(videoPlayer, {
+        fill: true,
+        responsive: true,
+      });
     });
+  }
+
+  $: {
+    initialisePlayer(vid);
   }
 </script>
 
 <video
   bind:this={videoPlayer}
-  class="video-js"
+  class="video-js bg-transparent"
   controls
   preload="auto"
-  width="1024"
-  height="576"
+  poster="{$config?.video_base_url}{vid}.png"
 >
-  <source src="//localhost:8080/{vid}.mp4" type="video/mp4" />
+  <source src="{$config?.video_base_url}{vid}.mp4" type="video/mp4" />
   <track
     kind="captions"
-    src="//localhost:8080/{vid}.vtt"
+    src="{$config?.video_base_url}{vid}.vtt"
     srclang="en"
     label="English"
     default

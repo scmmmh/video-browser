@@ -1,5 +1,5 @@
 """Access to the application settings."""
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 
     dsn: PostgresDsn
     dev: bool = False
+    video_base_url: HttpUrl
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

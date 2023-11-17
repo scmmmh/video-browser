@@ -1,8 +1,9 @@
 """Database models for playlists."""
-from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Column, Integer, Unicode, UnicodeText
+from sqlalchemy.orm import relationship
 
-from video_browser.models.base import Base
+from video_browser.models.meta import Base
+from video_browser.models.playlist_item import playlists_videos
 
 
 class Playlist(Base):
@@ -15,13 +16,6 @@ class Playlist(Base):
     title = Column(Unicode(255))
     description = Column(UnicodeText())
 
-
-class PlaylistModel(BaseModel):
-    """A pydantic model for validating a playlist."""
-
-    id: int
-    public_id: str
-    title: str
-    description: str
-
-    model_config = ConfigDict(from_attributes=True)
+    videos = relationship(
+        "Video", secondary=playlists_videos, order_by=playlists_videos.c.order, back_populates="playlists"
+    )

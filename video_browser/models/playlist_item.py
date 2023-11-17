@@ -1,14 +1,13 @@
 """Database models for connecting playlists to videos."""
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Table, Column, ForeignKey, Integer
 
-from video_browser.models.base import Base
+from video_browser.models.meta import metadata
 
 
-class PlaylistItem(Base):
-    """Database model for a connecting a Playlist to a Video."""
-
-    __tablename__ = "playlist_items"
-
-    playlist_id = Column(Integer, ForeignKey("playlist.id"), primary_key=True)
-    video_id = Column(Integer, ForeignKey("videos.id"), primary_key=True)
-    order = Column(Integer())
+playlists_videos = Table(
+    "playlist_items",
+    metadata,
+    Column("playlist_id", Integer, ForeignKey("playlists.id"), primary_key=True),
+    Column("video_id", Integer, ForeignKey("videos.id"), primary_key=True),
+    Column("order", Integer()),
+)
