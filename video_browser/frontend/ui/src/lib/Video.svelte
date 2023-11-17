@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import { WebVTTParser } from "webvtt-parser";
+  import { location } from "../simple-svelte-router";
 
   import VideoPlayer from "../lib/VideoPlayer.svelte";
   import { currentVideo } from "../store";
@@ -49,7 +50,7 @@
   >
     <h3 class="sr-only">{$currentVideo.title}</h3>
     <div class="flex-1">
-      <VideoPlayer vid={"648c78cd-0fad-424e-8195-ecb0b90fef00"} />
+      <VideoPlayer vid={$location.pathComponents[1]} />
     </div>
     <div class="h-1/4 overflow-y-auto mt-4 border-t border-zinc-950">
       <h4 class="sr-only">Transcript</h4>
