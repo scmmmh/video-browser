@@ -4,7 +4,7 @@
   import { location } from "../simple-svelte-router";
 
   import VideoPlayer from "../lib/VideoPlayer.svelte";
-  import { currentVideo } from "../store";
+  import { currentVideo, config } from "../store";
 
   const parser = new WebVTTParser();
   let paragraphs: string[] = [];
@@ -13,7 +13,7 @@
     if (currentVideo) {
       paragraphs = [];
       window
-        .fetch("http://localhost:8080/" + currentVideo.id + ".vtt")
+        .fetch($config?.video_base_url + currentVideo.id + ".vtt")
         .then((response) => {
           if (response.status === 200) {
             response.text().then((data) => {
