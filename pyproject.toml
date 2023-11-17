@@ -41,6 +41,18 @@ Source = "https://github.com/unknown/video-browser/"
 [tool.hatch.version]
 path = "video_browser//__about__.py"
 
+[tool.hatch.build]
+exclude = [
+  "dev",
+  "tests",
+  ".gitignore",
+  ".pre-commit-config.yaml",
+  "Dockerfile",
+  "pyproject.toml",
+  "video_browser/frontend/ui/**/*",
+]
+artifacts = ["video_browser/frontend/ui/dist/**/*"]
+
 [tool.hatch.envs.default]
 dependencies = ["coverage[toml]>=6.5", "pytest"]
 
