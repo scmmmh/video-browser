@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, tick } from "svelte";
+  import { onMount, onDestroy, tick } from "svelte";
   import videojs from "video.js";
   import type Player from "video.js/dist/types/player";
 
@@ -7,29 +7,17 @@
 
   export let vid: string;
   let videoPlayer: HTMLVideoElement;
-  let player: Player | null = null;
 
   onDestroy(() => {
     videojs(videoPlayer).dispose();
-    player = null;
   });
 
-  function initialisePlayer(vid: string) {
-    if (player) {
-      videojs(videoPlayer).dispose();
-      player = null;
-    }
-    tick().then(() => {
-      player = videojs(videoPlayer, {
-        fill: true,
-        responsive: true,
-      });
+  onMount(() => {
+    videojs(videoPlayer, {
+      fill: true,
+      responsive: true,
     });
-  }
-
-  $: {
-    initialisePlayer(vid);
-  }
+  });
 </script>
 
 <video

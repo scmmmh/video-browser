@@ -50,7 +50,9 @@
   >
     <h3 class="sr-only">{$currentVideo.title}</h3>
     <div class="flex-1">
-      <VideoPlayer vid={$location.pathComponents[1]} />
+      {#key $location.pathComponents[1]}
+        <VideoPlayer vid={$location.pathComponents[1]} />
+      {/key}
     </div>
     <div class="h-1/4 overflow-y-auto mt-4 border-t border-zinc-950">
       <h4 class="sr-only">Transcript</h4>
