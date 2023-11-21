@@ -1,9 +1,30 @@
 <script lang="ts">
-  import { Route } from "../simple-svelte-router";
+  import { onDestroy } from "svelte";
+  import { Route, location } from "../simple-svelte-router";
   import { config, playlist, playlistVideos, currentVideo } from "../store";
   import Video from "./Video.svelte";
 
   let notFound = false;
+
+  const locationUnsubscribe = location.subscribe((location) => {
+    let countdown = 100;
+    function changePoll() {
+      const currentElement = document.querySelector(
+        "#playlist-item-" + location.pathComponents[1]
+      );
+      if (currentElement !== null) {
+        currentElement.scrollIntoView();
+      } else if (countdown > 0) {
+        window.setTimeout(changePoll, 10);
+        countdown--;
+      }
+    }
+    if (location.pathComponents.length === 2) {
+      window.setTimeout(changePoll, 10);
+    }
+  });
+
+  onDestroy(locationUnsubscribe);
 </script>
 
 {#if notFound}
@@ -26,7 +47,10 @@
       <h2 class="sr-only">{$playlist.title}</h2>
       <ul class="flex flex-row sm:flex-col h-full overflow-auto">
         {#each $playlistVideos as video}
-          <li class="px-4 sm:px-0 sm:py-4 sm:pl-4">
+          <li
+            id="playlist-item-{video.id}"
+            class="px-4 sm:px-0 sm:py-4 sm:pl-4"
+          >
             <a
               href="#/{$playlist.id}/{video.id}"
               class="flex flex-col overflow-hidden w-48 border-b-4 sm:border-b-0 sm:border-r-4 sm:pr-4 {$currentVideo !==
