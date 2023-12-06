@@ -20,7 +20,7 @@
     "tslib": "^2.6.0",
     "typescript": "^5.0.2",
     "video.js": "^8.6.1",
-    "vite": "^4.4.5",
+    "vite": "^4.5.1",
     "webvtt-parser": "^2.2.0"
   }
 }
