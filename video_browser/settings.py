@@ -1,4 +1,6 @@
 """Access to the application settings."""
+import os
+
 from pydantic import PostgresDsn, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -13,4 +15,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
-settings = Settings()
+if 'ALEMBIC' not in os.environ:
+    settings = Settings()
+else:
+    settings = None

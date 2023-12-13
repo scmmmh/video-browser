@@ -24,10 +24,13 @@ classifiers = [
 ]
 dependencies = [
   "alembic>=1.10.2,<2.0.0",
+  "argon2-cffi",
   "asyncpg",
   "fastAPI",
-  "pydantic>=2,<3",
+  "passlib",
+  "pydantic[email]>=2,<3",
   "pydantic_settings>=2,<3",
+  "pyjwt",
   "sqlalchemy>=2.0.7,<3.0.0",
   "typer[all]>=0.7.0,<1.0.0",
   "uvicorn[standard]",
@@ -58,7 +61,8 @@ dependencies = ["coverage[toml]>=6.5", "pytest"]
 
 [tool.hatch.envs.default.scripts]
 video-browser = "cd dev && python -m video_browser {args}"
-server = "cd dev && uvicorn --host 0.0.0.0 --reload --reload-dir ../video_browser video_browser.frontend:app {args}"
+frontend = "cd dev && uvicorn --host 0.0.0.0 --port 8000 --reload --reload-dir ../video_browser video_browser.frontend:app {args}"
+backend = "cd dev && uvicorn --host 0.0.0.0 --port 8001 --reload --reload-dir ../video_browser video_browser.backend:app {args}"
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
 cov-report = ["- coverage combine", "coverage report"]
