@@ -21,7 +21,7 @@
 </script>
 
 <div class="bg-slate-950 text-white shadow-lg shadow-slate-950">
-  <ul class="flex flex-row space-x-4">
+  <ul class="flex flex-row space-x-4 pt-1">
     <li>
       <a
         href="#/"
