@@ -11,7 +11,7 @@
     if (location.pathComponents.vid) {
       return { queryKey: ["videos", location.pathComponents.vid] };
     } else {
-      return { queryKey: ["videos", "null"] };
+      return { queryKey: ["videos", "null"], enabled: false };
     }
   });
 
@@ -23,7 +23,7 @@
         queryKey: ["videos", location.pathComponents.vid, "transcript"],
       };
     } else {
-      return { queryKey: ["videos", "null", "transcript"] };
+      return { queryKey: ["videos", "null", "transcript"], enabled: false };
     }
   });
 
