@@ -82,7 +82,7 @@
     },
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: ["playlists", $location.pathComponents.pid],
+        queryKey: ["playlists"],
       });
     },
   });

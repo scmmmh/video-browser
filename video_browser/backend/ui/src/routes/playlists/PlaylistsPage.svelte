@@ -28,7 +28,22 @@
                 ? 'border-r-amber-300'
                 : 'border-r-slate-950'} hover:border-r-amber-300 focus:border-r-amber-300"
             >
-              <Placeholder height="h-32" width="w-56" animate={false} />
+              {#if playlist.thumbnail === null}
+                <Placeholder
+                  height="h-32"
+                  width="w-56"
+                  extraCss="mb-2"
+                  animate={false}
+                />
+              {:else}
+                <span class="block w-56 mb-2">
+                  <img
+                    src="{$config.data.video_base_url}{playlist.thumbnail}.png"
+                    alt=""
+                    aria-hidden="true"
+                  />
+                </span>
+              {/if}
               <span class="block w-56 truncate">{playlist.title}</span>
             </a>
           </li>

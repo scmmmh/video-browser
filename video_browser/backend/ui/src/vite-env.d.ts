@@ -23,4 +23,5 @@ type Playlist = {
   public_id: string,
   title: string,
   videos: number[],
+  thumbnail: string | null,
 };

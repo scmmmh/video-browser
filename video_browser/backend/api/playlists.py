@@ -1,6 +1,6 @@
 """API for the frontend video browser."""
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, ConfigDict, field_validator, Field
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator, Field
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -21,6 +21,7 @@ class PlaylistModel(BaseModel):
     public_id: str
     title: str
     videos: list[int] = Field(validation_alias="items")
+    thumbnail: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -30,13 +31,21 @@ class PlaylistModel(BaseModel):
         """Convert the list of PlaylistItems to video ids."""
         return [obj.video_id for obj in value]
 
+    @model_validator(mode="before")
+    @classmethod
+    def determine_thumbnail(cls: "PlaylistModel", playlist: Playlist) -> Playlist:
+        """Set a thumbnail if there are video items."""
+        if len(playlist.items) > 0:
+            setattr(playlist, "thumbnail", playlist.items[0].video.public_id)
+        return playlist
+
 
 @router.get("/", response_model=list[PlaylistModel])
 async def get_all_playlists(
     current_user: Annotated[User, Depends(get_current_user)], dbsession: Annotated[AsyncSession, Depends(db_session)]
 ) -> list[PlaylistModel]:
     """Fetch all playlists."""
-    query = select(Playlist).options(selectinload(Playlist.items))
+    query = select(Playlist).options(selectinload(Playlist.items).selectinload(PlaylistItem.video))
     return (await dbsession.execute(query)).scalars()
 
 
@@ -47,7 +56,11 @@ async def get_playlist(
     dbsession: Annotated[AsyncSession, Depends(db_session)],
 ) -> Playlist:
     """Retrieve a single playlist."""
-    query = select(Playlist).filter(Playlist.id == pid).options(selectinload(Playlist.items))
+    query = (
+        select(Playlist)
+        .filter(Playlist.id == pid)
+        .options(selectinload(Playlist.items).selectinload(PlaylistItem.video))
+    )
     playlist = (await dbsession.execute(query)).scalar()
     if playlist is not None:
         return playlist
