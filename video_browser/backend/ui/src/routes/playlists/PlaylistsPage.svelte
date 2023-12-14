@@ -14,6 +14,8 @@
   }) as CreateQueryResult<Playlist[], Error>;
 </script>
 
+<svelte:head><title>Playlists</title></svelte:head>
+
 <div class="flex-1 flex flex-row overflow-hidden">
   <div class="bg-slate-950 h-full shadow-lg shadow-slate-950">
     <h1 tabindex="-1" class="sr-only">Playlists</h1>

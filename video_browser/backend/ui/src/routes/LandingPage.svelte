@@ -1,6 +1,8 @@
 <script lang="ts">
 </script>
 
+<svelte:head><title>Video Browser Admin</title></svelte:head>
+
 <div class="flex-1 relative">
   <h1
     tabindex="-1"
