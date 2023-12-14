@@ -9,6 +9,7 @@
   import ConfigLoader from "./lib/ConfigLoader.svelte";
   import Header from "./lib/Header.svelte";
   import VideosPage from "./routes/videos/VideosPage.svelte";
+  import PlaylistsPage from "./routes/playlists/PlaylistsPage.svelte";
 
   let authToken =
     $sessionPreferences.auth &&
@@ -52,7 +53,7 @@
         <Header />
         <Route path="/"><LandingPage /></Route>
         <Route path="/videos/*"><VideosPage /></Route>
-        <Route path="/playlists/*">Playlists</Route>
+        <Route path="/playlists/*"><PlaylistsPage /></Route>
       </Authenticate>
     </div>
   </ConfigLoader>

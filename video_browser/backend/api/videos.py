@@ -47,7 +47,7 @@ async def create_video(
     transcript: UploadFile,
     current_user: Annotated[User, Depends(get_current_user)],
     dbsession: Annotated[AsyncSession, Depends(db_session)],
-) -> list[Video]:
+) -> Video:
     """Create a new video."""
     db_video = Video(public_id=str(uuid4()), title=title, description=description)
     with open(os.path.join(settings.data_base_path, f"{db_video.public_id}.mp4"), "wb") as out_f:
@@ -77,7 +77,7 @@ async def get_video(
 
 
 @router.get("/{vid}/transcript")
-async def get_video(
+async def get_video_transcript(
     vid: int,
     current_user: Annotated[User, Depends(get_current_user)],
     dbsession: Annotated[AsyncSession, Depends(db_session)],

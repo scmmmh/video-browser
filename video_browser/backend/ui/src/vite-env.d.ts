@@ -17,3 +17,10 @@ type Video = {
   title: string,
   description: string,
 };
+
+type Playlist = {
+  id: number,
+  public_id: string,
+  title: string,
+  videos: number[],
+};

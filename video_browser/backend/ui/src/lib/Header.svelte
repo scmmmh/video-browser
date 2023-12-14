@@ -54,7 +54,7 @@
         >Playlists</a
       >
     </li>
-    <li role="presentation" class="flex-1"></li>
+    <li class="flex-1"></li>
     {#if $user.isSuccess}
       <li>
         <span class="block px-3 py-1 text-amber-300 font-bold"

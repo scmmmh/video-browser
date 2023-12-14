@@ -10,6 +10,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
+    "@mdi/js": "^7.3.67",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "@tanstack/svelte-query": "^5.13.2",
     "@tsconfig/svelte": "^5.0.2",
@@ -21,7 +22,7 @@
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
     "video.js": "^8.6.1",
-    "webvtt-parser": "^2.2.0",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "webvtt-parser": "^2.2.0"
   }
 }
