@@ -6,7 +6,9 @@
   import Route from "./simple-svelte-router/Route.svelte";
   import LandingPage from "./routes/LandingPage.svelte";
   import Authenticate from "./lib/Authenticate.svelte";
+  import ConfigLoader from "./lib/ConfigLoader.svelte";
   import Header from "./lib/Header.svelte";
+  import VideosPage from "./routes/videos/VideosPage.svelte";
 
   let authToken =
     $sessionPreferences.auth &&
@@ -16,6 +18,9 @@
   setContext("setAuthToken", (newToken: string) => {
     authToken = newToken;
     sessionPreferences.setPreference("auth.token", newToken);
+  });
+  setContext("getAuthToken", () => {
+    return authToken;
   });
 
   const queryClient = new QueryClient({
@@ -39,14 +44,16 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
-  <div
-    class="flex flex-col bg-zinc-300 text-white w-screen h-screen overflow-hidden"
-  >
-    <Authenticate>
-      <Header />
-      <Route path="/"><LandingPage /></Route>
-      <Route path="/videos/*">Videos</Route>
-      <Route path="/playlists/*">Playlists</Route>
-    </Authenticate>
-  </div>
+  <ConfigLoader>
+    <div
+      class="flex flex-col bg-zinc-300 text-white w-screen h-screen overflow-hidden"
+    >
+      <Authenticate>
+        <Header />
+        <Route path="/"><LandingPage /></Route>
+        <Route path="/videos/*"><VideosPage /></Route>
+        <Route path="/playlists/*">Playlists</Route>
+      </Authenticate>
+    </div>
+  </ConfigLoader>
 </QueryClientProvider>

@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     dsn: PostgresDsn
     dev: bool = False
     video_base_url: HttpUrl
+    data_base_path: str | None = None
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
