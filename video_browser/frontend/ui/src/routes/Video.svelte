@@ -110,6 +110,10 @@
   });
 </script>
 
+<svelte:head>
+  <title>{$video.isSuccess ? $video.data.title : "Loading"}</title>
+</svelte:head>
+
 {#if $playlistVideos.isSuccess || $playlistVideos.isPending}
   <article
     class="flex-1 flex flex-col md:flex-row shadow-inner shadow-zinc-950 bg-zinc-700 overflow-hidden"
@@ -188,7 +192,7 @@
             <p>Unfortunately the transcript could not be loaded.</p>
           {/if}
         </div>
-      {:else if $video.isPending || $transcript.isPending}
+      {:else if $video.isPending}
         <Placeholder height="h-8" width="w-full" extraCss="mb-4" />
         <Placeholder height="h-[24rem]" width="w-full" extraCss="mb-4" />
         <Placeholder height="h-28" width="w-full" extraCss="mb-4" />
@@ -197,7 +201,9 @@
           <span slot="title">Video not found</span>
           <p slot="message">
             Unfortunately the video you were looking for could not be found.
-            Please select a different video from the left
+            Please select a different video from the <span
+              class="hidden sm:inline">left</span
+            ><span class="sm:hidden">top</span>.
           </p>
         </Status>
       {/if}

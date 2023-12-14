@@ -34,6 +34,10 @@
   >;
 </script>
 
+<svelte:head>
+  <title>{$playlist.isSuccess ? $playlist.data.title : "Loading"}</title>
+</svelte:head>
+
 {#if $playlist.isError || $playlistVideos.isError}
   <Status>
     <span slot="title">Playlist not found</span>
