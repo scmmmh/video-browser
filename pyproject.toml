@@ -54,8 +54,12 @@ exclude = [
   "Dockerfile",
   "pyproject.toml",
   "video_browser/frontend/ui/**/*",
+  "video_browser/backend/ui/**/*",
 ]
-artifacts = ["video_browser/frontend/ui/dist/**/*"]
+artifacts = [
+  "video_browser/frontend/ui/dist/**/*",
+  "video_browser/backend/ui/dist/**/*",
+]
 
 [tool.hatch.envs.default]
 dependencies = ["coverage[toml]>=6.5", "pytest"]
