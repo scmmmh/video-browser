@@ -3,7 +3,6 @@ from sqlalchemy import Column, Integer, Unicode, UnicodeText
 from sqlalchemy.orm import relationship
 
 from video_browser.models.meta import Base
-from video_browser.models.playlist_item import playlists_videos
 
 
 class Video(Base):
@@ -16,4 +15,4 @@ class Video(Base):
     title = Column(Unicode(255))
     description = Column(UnicodeText())
 
-    playlists = relationship("Playlist", secondary=playlists_videos, order_by="Playlist.title", back_populates="videos")
+    items = relationship("PlaylistItem", back_populates="video")

@@ -3,13 +3,15 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from video_browser.backend.api import auth
+from video_browser.backend.api import auth, playlists, videos
 from video_browser.models import db_session
 from video_browser.settings import settings
 
 
 router = APIRouter(prefix="/api")
 router.include_router(auth.router)
+router.include_router(playlists.router)
+router.include_router(videos.router)
 
 
 @router.get("/")
