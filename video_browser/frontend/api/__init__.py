@@ -68,3 +68,16 @@ async def get_videos(
     """Get all videos for a playlist."""
     query = select(Video).join(Video.items).join(PlaylistItem.playlist).filter(Playlist.public_id == pid)
     return (await dbsession.execute(query)).scalars()
+
+
+@router.get("/videos/{vid}", response_model=VideoModel)
+async def get_video(
+    vid: str,
+    dbsession: Annotated[AsyncSession, Depends(db_session)],
+) -> Video:
+    """Get a single videos."""
+    query = select(Video).filter(Video.public_id == vid)
+    video = (await dbsession.execute(query)).scalar()
+    if video is not None:
+        return video
+    raise HTTPException(404)
