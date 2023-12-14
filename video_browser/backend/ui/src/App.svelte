@@ -39,7 +39,9 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
-  <div class="bg-zinc-300 text-white w-screen h-screen overflow-hidden">
+  <div
+    class="flex flex-col bg-zinc-300 text-white w-screen h-screen overflow-hidden"
+  >
     <Authenticate>
       <Header />
       <Route path="/"><LandingPage /></Route>

@@ -1,10 +1,23 @@
 <script lang="ts">
-  import { createQuery, type CreateQueryResult } from "@tanstack/svelte-query";
+  import { getContext } from "svelte";
+  import {
+    createQuery,
+    useQueryClient,
+    type CreateQueryResult,
+  } from "@tanstack/svelte-query";
   import { location } from "../simple-svelte-router";
 
   const user = createQuery({
     queryKey: ["auth", "user"],
   }) as CreateQueryResult<User, Error>;
+  const queryClient = useQueryClient();
+  const setAuthToken = getContext("setAuthToken") as (newToken: string) => void;
+
+  function logout() {
+    setAuthToken("");
+    queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    queryClient.resetQueries({ queryKey: ["auth", "user"] });
+  }
 </script>
 
 <div class="bg-slate-950 text-white shadow-lg shadow-slate-950">
@@ -51,6 +64,7 @@
     {/if}
     <li>
       <button
+        on:click={logout}
         class="block px-3 py-1 text-amber-300 font-bold border-b-4 border-b-slate-950 hover:border-b-amber-300 focus:border-b-amber-300"
         >Logout</button
       >
