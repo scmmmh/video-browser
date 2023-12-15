@@ -1,4 +1,14 @@
-<script lang="ts"></script>
+<script lang="ts">
+  import { onMount } from "svelte";
+
+  let headerElement: HTMLHeadingElement | null = null;
+
+  onMount(() => {
+    if (headerElement) {
+      headerElement.focus();
+    }
+  });
+</script>
 
 <div class="fixed z-50 top-0 left-0 w-screen h-screen bg-zinc-700/70">
   <div
@@ -7,6 +17,7 @@
     class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-zinc-700 shadow-lg shadow-zinc-950"
   >
     <h3
+      bind:this={headerElement}
       tabindex="-1"
       class="px-3 py-1 rounded-t bg-slate-950 text-amber-300 text-lg font-bold"
     >
