@@ -76,6 +76,40 @@ async def get_video(
         raise HTTPException(404)
 
 
+@router.patch("/{vid}", response_model=VideoModel)
+async def patch_video(
+    vid: int,
+    current_user: Annotated[User, Depends(get_current_user)],
+    dbsession: Annotated[AsyncSession, Depends(db_session)],
+    title: Annotated[str | None, Body()] = None,
+    description: Annotated[str | None, Body()] = None,
+    video: UploadFile = None,
+    poster: UploadFile = None,
+    transcript: UploadFile = None,
+) -> Video:
+    """Patch the properties of a single video."""
+    query = select(Video).filter(Video.id == vid)
+    db_video = (await dbsession.execute(query)).scalar()
+    if db_video is not None:
+        if title is not None:
+            db_video.title = title
+        if description is not None:
+            db_video.description = description
+        if video is not None:
+            with open(os.path.join(settings.data_base_path, f"{db_video.public_id}.mp4"), "wb") as out_f:
+                copyfileobj(video.file, out_f)
+        if poster is not None:
+            with open(os.path.join(settings.data_base_path, f"{db_video.public_id}.png"), "wb") as out_f:
+                copyfileobj(poster.file, out_f)
+        if transcript is not None:
+            with open(os.path.join(settings.data_base_path, f"{db_video.public_id}.vtt"), "wb") as out_f:
+                copyfileobj(transcript.file, out_f)
+        await dbsession.commit()
+        return db_video
+    else:
+        raise HTTPException(404)
+
+
 @router.get("/{vid}/transcript")
 async def get_video_transcript(
     vid: int,

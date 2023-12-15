@@ -1,11 +1,29 @@
 <script lang="ts">
+  import { getContext } from "svelte";
   import { derived } from "svelte/store";
-  import { createQuery, type CreateQueryResult } from "@tanstack/svelte-query";
+  import {
+    createMutation,
+    createQuery,
+    useQueryClient,
+    type CreateQueryResult,
+  } from "@tanstack/svelte-query";
   import { location } from "../../simple-svelte-router";
   import { WebVTTParser } from "webvtt-parser";
 
   import Placeholder from "../../lib/Placeholder.svelte";
   import VideoPlayer from "../../lib/VideoPlayer.svelte";
+  import EditableField from "../../lib/EditableField.svelte";
+  import ModalDialog from "../../lib/ModalDialog.svelte";
+  import Icon from "../../lib/Icon.svelte";
+  import { mdiImageEdit, mdiMovieEdit, mdiTextBoxEdit } from "@mdi/js";
+
+  const parser = new WebVTTParser();
+  const getAuthToken = getContext("getAuthToken") as () => string;
+  const queryClient = useQueryClient();
+  let showUpdateFile = false;
+  let updateFileTitle = "";
+  let updateFileField = "";
+  let updateFileForm: HTMLFormElement | null = null;
 
   const videoQuery = derived(location, (location) => {
     if (location.pathComponents.vid) {
@@ -32,8 +50,6 @@
     Error
   >;
 
-  const parser = new WebVTTParser();
-
   const transcriptParas = derived(transcript, (transcript) => {
     if (transcript.isSuccess) {
       const vtt = parser.parse(transcript.data.text);
@@ -58,6 +74,46 @@
       return [];
     }
   });
+
+  const videoUpdater = createMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await window.fetch(
+        "/api/videos/" + $location.pathComponents.vid,
+        {
+          method: "PATCH",
+          body: formData,
+          headers: { Authorization: "Bearer " + getAuthToken() },
+        },
+      );
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error("Failed to update the video");
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["videos"] });
+      showUpdateFile = false;
+    },
+  });
+
+  function updateTitle(ev: CustomEvent) {
+    const formData = new FormData();
+    formData.set("title", ev.detail);
+    $videoUpdater.mutate(formData);
+  }
+
+  function updateDescription(ev: CustomEvent) {
+    const formData = new FormData();
+    formData.set("description", ev.detail);
+    $videoUpdater.mutate(formData);
+  }
+
+  function updateFile(ev: Event) {
+    ev.preventDefault();
+    if (updateFileForm) {
+      $videoUpdater.mutate(new FormData(updateFileForm));
+    }
+  }
 </script>
 
 <svelte:head
@@ -65,22 +121,102 @@
   ></svelte:head
 >
 
-<div class="flex flex-col bg-zinc-700 h-full px-4 py-4 overflow-hidden">
+<div
+  class="relative flex flex-col bg-zinc-700 h-full px-4 py-4 overflow-hidden"
+>
   {#if $video.isSuccess && $transcript.isSuccess}
-    <h1 class="text-xl font-bold mb-4">{$video.data.title}</h1>
+    <h1 class="text-xl font-bold mb-4">
+      <EditableField on:change={updateTitle} value={$video.data.title} />
+    </h1>
     <div class="flex-1 flex flex-row space-x-4 overflow-hidden">
       <div class="w-[42rem]">
-        <div class="h-96 mb-4">
+        <div class="relative h-96 mb-4">
+          <div class="absolute top-0 right-0 z-10 flex flex-row space-x-2">
+            <button
+              on:click={() => {
+                showUpdateFile = true;
+                updateFileTitle = "Update this video's poster";
+                updateFileField = "poster";
+              }}
+              class="p-2 rounded bg-amber-300 text-black"
+            >
+              <Icon
+                path={mdiImageEdit}
+                title="Upload a new version of the poster"
+                class="w-6 h-6"
+              />
+            </button>
+            <button
+              on:click={() => {
+                showUpdateFile = true;
+                updateFileTitle = "Update this video";
+                updateFileField = "video";
+              }}
+              class="p-2 rounded bg-amber-300 text-black"
+            >
+              <Icon
+                path={mdiMovieEdit}
+                title="Upload a new version of this video"
+                class="w-6 h-6"
+              />
+            </button>
+          </div>
           <VideoPlayer vid={$video.data.public_id}></VideoPlayer>
         </div>
-        <p>{$video.data.description}</p>
+        <p>
+          <EditableField
+            on:change={updateDescription}
+            value={$video.data.description}
+          />
+        </p>
       </div>
-      <div class="flex-1 max-w-[32rem] h-full overflow-auto">
+      <div class="relative flex-1 max-w-[32rem] h-full overflow-auto">
+        <div class="sticky top-0 z-10 flex flex-row space-x-2 justify-end">
+          <button
+            on:click={() => {
+              showUpdateFile = true;
+              updateFileTitle = "Update this video's transcript";
+              updateFileField = "transcript";
+            }}
+            class="p-2 rounded bg-amber-300 text-black"
+          >
+            <Icon
+              path={mdiTextBoxEdit}
+              title="Upload a new version of the transcript"
+              class="w-6 h-6"
+            />
+          </button>
+        </div>
         {#each $transcriptParas as para}
           <p class="mb-2">{para}</p>
         {/each}
       </div>
     </div>
+    {#if showUpdateFile}
+      <ModalDialog>
+        <span slot="title">{updateFileTitle}</span>
+        <form bind:this={updateFileForm} on:submit={updateFile} slot="content">
+          <label class="block mb-4">
+            <span class="block text-sm">New file</span>
+            <input name={updateFileField} type="file" />
+          </label>
+          <div class="flex flex-row justify-end space-x-2">
+            <button
+              on:click={() => {
+                showUpdateFile = false;
+              }}
+              type="button"
+              class="p-2 rounded bg-red-500 text-white"
+            >
+              Don't update
+            </button>
+            <button type="submit" class="p-2 rounded bg-green-500 text-white">
+              Update
+            </button>
+          </div>
+        </form>
+      </ModalDialog>
+    {/if}
   {:else}
     <Placeholder width="w-[42rem]" height="h-10" extraCss="mb-4"
       ><span class="sr-only">Loading. Please wait.</span></Placeholder
