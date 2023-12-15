@@ -121,7 +121,7 @@
   ></svelte:head
 >
 
-<div class="flex flex-col bg-zinc-700 h-full px-4 py-4 overflow-hidden">
+<div class="flex flex-col bg-zinc-700 h-full px-4 py-4 overflow-auto">
   {#if $playlist.isSuccess && $videos.isSuccess}
     <h1 class="text-xl font-bold mb-4">{$playlist.data.title}</h1>
     <ol>
