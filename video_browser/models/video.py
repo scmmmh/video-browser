@@ -7,8 +7,8 @@ from video_browser.models.meta import Base
 
 
 def utcnow():
-    """Return the current UTC datetime."""
-    return datetime.now(tz=UTC)
+    """Return the current UTC datetime without timezone info."""
+    return datetime.now(tz=UTC).replace(tzinfo=None)
 
 
 class Video(Base):
