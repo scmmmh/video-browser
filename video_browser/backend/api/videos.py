@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, Body
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, ConfigDict
 from shutil import copyfileobj
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 from uuid import uuid4
@@ -34,7 +34,7 @@ async def get_all_videos(
     current_user: Annotated[User, Depends(get_current_user)], dbsession: Annotated[AsyncSession, Depends(db_session)]
 ) -> list[Video]:
     """Fetch all videos."""
-    query = select(Video)
+    query = select(Video).order_by(desc(Video.created_at))
     return (await dbsession.execute(query)).scalars()
 
 
