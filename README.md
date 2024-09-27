@@ -1,5 +1,7 @@
 # video-browser/
 
+**Archived and no longer supported**
+
 [![PyPI - Version](https://img.shields.io/pypi/v/video-browser/.svg)](https://pypi.org/project/video-browser/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/video-browser/.svg)](https://pypi.org/project/video-browser/)
 
